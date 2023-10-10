@@ -6,14 +6,32 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 11:36:35 by dberes            #+#    #+#             */
-/*   Updated: 2023/10/06 20:20:18 by dberes           ###   ########.fr       */
+/*   Updated: 2023/10/10 15:07:22 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
 #include "get_next_line.h"
-#include <stdio.h>
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	size_t	spaces;
+	int		*array;
+    int     i;
+
+    i = 0;
+	spaces = nmemb * size;
+	if (spaces > INT_MAX)
+		return (NULL);
+	array = malloc(spaces);
+	if (array == NULL)
+		return (NULL);
+    while (i < spaces)
+    {
+        array[i] = 0;
+        i++;
+    }
+	return (array);
+}
 
 char	*get_next_line(int fd)
 {
@@ -24,7 +42,7 @@ char	*get_next_line(int fd)
 
 		i = 0;
 		cnt = 10;
-		line = "";
+		line = ft_calloc(1, 1);
 		buf = (void *)malloc(cnt);
 		while (i < 3)
 		{

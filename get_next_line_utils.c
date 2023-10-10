@@ -1,6 +1,5 @@
-#include <stdlib.h>
+
 #include "get_next_line.h"
-#include <stdio.h>
 
 unsigned long	ft_strlen(char *str)
 {
@@ -39,7 +38,7 @@ char	*add_resid(char *str)
 	len = ft_strlen(str);
 	j = 0;
 	
-	if (i != ft_strlen(str))
+	if (i != len)
 	{
 		resid = (char *)malloc(len - i + 1);
 		if (resid == NULL)
@@ -77,13 +76,13 @@ char	*strjoin(char *existing, char *extra)
 	int		j;
 	char	*line;
 
-	len1 = check_end(existing);
+	len1 = ft_strlen(existing);
 	len2 = check_end(extra);
 	line = (char *)malloc(len1 + len2 + 1);
 	if (line == NULL)
 		return (NULL);
 	i = 0;
-	if (add_resid(extra) != 0)
+	if (line == 0 && add_resid(extra) != 0)
 	{
 		line = add_resid(extra);
 		i = len2;
