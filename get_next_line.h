@@ -24,4 +24,5 @@ char				*strjoin(char *exisiting, char *extra);
 int					check_end(char *str);
 char				*add_resid(char *str);
 void                *ft_calloc(size_t nmemb, size_t size);
+char	            *ft_strcpy(char *str2, int i);
 #endif

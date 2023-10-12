@@ -35,10 +35,11 @@ void	*ft_calloc(size_t nmemb, size_t size)
 
 char	*get_next_line(int fd)
 {
-		char		*line;
-		int			cnt;
-		void		*buf;
-		int			i;
+		char			*line;
+		int				cnt;
+		void			*buf;
+		int				i;
+		static	char	*res;
 
 		i = 0;
 		cnt = 10;
@@ -47,6 +48,20 @@ char	*get_next_line(int fd)
 		while (i < 3)
 		{
 			read(fd, buf, cnt);
+			if (add_resid((char *)buf)[0] != 0)
+			{
+				res = (char *)malloc((cnt - ft_strlen(add_resid((char *)buf))) * sizeof(char));
+				if (res == NULL)
+					return NULL;
+				res = add_resid((char *)buf);
+			}
+			if (line[0] == 0 && res[0] != 0)
+			{
+				line = (char *)malloc(ft_strlen(res));
+				if (line == NULL)
+					return NULL;
+				line = ft_strcpy(res, 0);
+			}
         	line = strjoin(line, buf);
 			i++;
 		}
