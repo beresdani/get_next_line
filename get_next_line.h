@@ -18,6 +18,10 @@
 # include <limits.h>
 # include <stdio.h>
 
+#ifndef BUFFER_SIZE
+#define BUFFER_SIZE 10
+#endif
+
 char				*get_next_line(int fd);
 unsigned long		ft_strlen(char *str);
 char				*strjoin(char *exisiting, char *extra);
