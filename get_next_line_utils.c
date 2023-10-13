@@ -3,7 +3,7 @@
 
 unsigned long	ft_strlen(char *str)
 {
-	int	i;
+	unsigned long	i;
 
 	i =0;
 	while (str && str[i] != 0)
