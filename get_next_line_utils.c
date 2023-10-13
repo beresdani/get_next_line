@@ -16,7 +16,7 @@ char	*ft_strcpy(char *str2, int i)
 	char	*str1;
 
 	j = 0;
-    str1 = malloc(ft_strlen(str2));
+    str1 = malloc(ft_strlen(str2) + 1);
     if (str1 == NULL)
         return NULL;
 	while (str2[i] != 0)
@@ -37,6 +37,8 @@ char	*add_resid(char *str)
 	
 	i = check_end(str);
     resid = ft_calloc(1 , 1);
+    if (!resid)
+        return (NULL);
 	len = ft_strlen(str);
     
 	j = 0;

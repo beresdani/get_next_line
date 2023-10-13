@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 11:36:35 by dberes            #+#    #+#             */
-/*   Updated: 2023/10/13 16:47:43 by dberes           ###   ########.fr       */
+/*   Updated: 2023/10/13 18:59:33 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,17 @@ char	*get_next_line(int fd)
 		int				newline;
 		static	char	*res;
 		char			*temp;
+		int				read_value;
 
 		newline = 0;
 		cnt = 10;
         if (!res)
             res = ft_calloc(1,1);
+		if (!res)
+			return (NULL);
 		buf = (void *)malloc(cnt);
+		if (!buf)
+			return (NULL);
         if (res[0] != 0)
 		{
 			line = (char *)malloc(ft_strlen(res));
@@ -56,21 +61,31 @@ char	*get_next_line(int fd)
 		}
 		else
 			line = ft_calloc(1,1);
+		if (!line)
+			return (NULL);
 		while (newline == 0)
 		{
-			read(fd, buf, cnt);
+			read_value = read(fd, buf, cnt);
+			if (read_value == -1)
+			{
+				free (line);
+				free (add_resid((char *)buf));
+				free (buf);
+				return (NULL);
+			}
 			if (check_end((char *)buf) < cnt)
 			{
 				newline = 1;
-				free(res);
-				res = (char *)malloc((cnt - ft_strlen(add_resid((char *)buf))) * sizeof(char));
-				if (res == NULL)
-					return NULL;
+				temp = res;
 				res = add_resid((char *)buf);
+				free(temp);
 			}
 			temp = line;
         	line = strjoin(line, buf);
 			free(temp);
+			if (!line)
+				return (NULL);
+			
 		}
 		line[ft_strlen(line) + 1] = 0;
 		free (buf);
