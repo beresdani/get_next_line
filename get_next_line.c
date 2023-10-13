@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 11:36:35 by dberes            #+#    #+#             */
-/*   Updated: 2023/10/10 15:07:22 by dberes           ###   ########.fr       */
+/*   Updated: 2023/10/13 16:47:43 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,33 +38,42 @@ char	*get_next_line(int fd)
 		char			*line;
 		int				cnt;
 		void			*buf;
-		int				i;
+		int				newline;
 		static	char	*res;
+		char			*temp;
 
-		i = 0;
+		newline = 0;
 		cnt = 10;
-		line = ft_calloc(1, 1);
+        if (!res)
+            res = ft_calloc(1,1);
 		buf = (void *)malloc(cnt);
-		while (i < 3)
+        if (res[0] != 0)
+		{
+			line = (char *)malloc(ft_strlen(res));
+			if (line == NULL)
+				return NULL;
+			line = ft_strcpy(res, 0);
+		}
+		else
+			line = ft_calloc(1,1);
+		while (newline == 0)
 		{
 			read(fd, buf, cnt);
-			if (add_resid((char *)buf)[0] != 0)
+			if (check_end((char *)buf) < cnt)
 			{
+				newline = 1;
+				free(res);
 				res = (char *)malloc((cnt - ft_strlen(add_resid((char *)buf))) * sizeof(char));
 				if (res == NULL)
 					return NULL;
 				res = add_resid((char *)buf);
 			}
-			if (line[0] == 0 && res[0] != 0)
-			{
-				line = (char *)malloc(ft_strlen(res));
-				if (line == NULL)
-					return NULL;
-				line = ft_strcpy(res, 0);
-			}
+			temp = line;
         	line = strjoin(line, buf);
-			i++;
+			free(temp);
 		}
+		line[ft_strlen(line) + 1] = 0;
+		free (buf);
 		return (line);
 }
 
@@ -76,6 +85,6 @@ int	main(void)
 	int	fd = open("try.txt", O_RDONLY); 
 	printf("%s", get_next_line(fd));
 	printf("%s", get_next_line(fd));
-	/*printf("%s", get_next_line(fd));*/
+	printf("%s", get_next_line(fd));
 	int close(int fd);
 }

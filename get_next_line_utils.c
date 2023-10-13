@@ -6,7 +6,7 @@ unsigned long	ft_strlen(char *str)
 	int	i;
 
 	i =0;
-	while (str[i] != 0)
+	while (str && str[i] != 0)
 		i++;
 	return (i);
 }
@@ -16,6 +16,9 @@ char	*ft_strcpy(char *str2, int i)
 	char	*str1;
 
 	j = 0;
+    str1 = malloc(ft_strlen(str2));
+    if (str1 == NULL)
+        return NULL;
 	while (str2[i] != 0)
 	{
 		str1[j] = str2[i];
@@ -31,14 +34,15 @@ char	*add_resid(char *str)
 	int		len;
 	int		i;
 	int		j;
-
 	
 	i = check_end(str);
+    resid = ft_calloc(1 , 1);
 	len = ft_strlen(str);
+    
 	j = 0;
 	
 	if (i != len)
-	{
+	{   
 		resid = (char *)malloc(len - i + 1);
 		if (resid == NULL)
 			return (NULL);
@@ -50,7 +54,6 @@ char	*add_resid(char *str)
 		}
 		return (resid);
 	}
-	resid = ft_calloc(1 , 1);
 	return (resid);
 }
 	
@@ -94,7 +97,5 @@ char	*strjoin(char *existing, char *extra)
 		i++;
 		j++;
 	}
-	if (len2 != ft_strlen(extra))
-		line[i] = '\n';
 	return (line);
 }
