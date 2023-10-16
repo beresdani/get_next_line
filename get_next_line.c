@@ -47,9 +47,6 @@ char	*get_next_line(int fd)
 		res = ft_calloc(1,1);
 	if (!res)
 		return (NULL);
-	buf = (void *)malloc(BUFFER_SIZE * sizeof(char));
-	if (!buf)
-		return (NULL);
     if (res[0] != 0)
 	{
 		line = (char *)malloc(ft_strlen(res));
@@ -63,6 +60,9 @@ char	*get_next_line(int fd)
 		return (NULL);
 	while (newline == 0)
 	{
+		buf = (void *)malloc(BUFFER_SIZE * sizeof(char) + 1);
+		if (!buf)
+			return (NULL);
 		read_value = read(fd, buf, BUFFER_SIZE);
 		if (read_value == -1 || fd < 0)
 		{
@@ -72,18 +72,19 @@ char	*get_next_line(int fd)
 		}
 		if (check_end(buf) < BUFFER_SIZE)
 		{
+			if (buf[check_end(buf)] == 0)
+				return(strjoin(line, buf));
 			newline = 1;
 			temp = res;
 			res = add_resid(buf);
 			free(temp);
 		}
-		temp = line;
+		buf[read_value] = '\0';
        	line = strjoin(line, buf);
-		free(temp);
+		free (buf);
 		if (!line)
 			return (NULL);		
 	}
-	free (buf);
 	return (line);
 }
 

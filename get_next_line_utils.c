@@ -67,9 +67,11 @@ int	check_end(char *str)
 	int	i;
 
 	i = 0;
-	while(i < BUFFER_SIZE)
+	while(i < BUFFER_SIZE && str[i])
 	{
-		if (str[i] == '\n')
+		if (str[i] == 0)
+			return (i);
+		else if (str[i] == '\n')
 			return (i);
 		i++;
 	}
@@ -103,5 +105,6 @@ char	*strjoin(char *existing, char *extra)
 		j++;
 	}
     line[i] = 0;
+	free(existing);
 	return (line);
 }
