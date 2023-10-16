@@ -36,7 +36,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 char	*get_next_line(int fd)
 {
 	char			*line;
-	void			*buf;
+	char			*buf;
 	int				newline;
 	static	char	*res;
 	char			*temp;
@@ -44,7 +44,7 @@ char	*get_next_line(int fd)
 
 	newline = 0;
     if (!res)
-        res = ft_calloc(1,1);
+		res = ft_calloc(1,1);
 	if (!res)
 		return (NULL);
 	buf = (void *)malloc(BUFFER_SIZE * sizeof(char));
@@ -70,15 +70,15 @@ char	*get_next_line(int fd)
 			free (buf);
 			return (NULL);
 		}
-		if (check_end((char *)buf) < BUFFER_SIZE)
+		if (check_end(buf) < BUFFER_SIZE)
 		{
 			newline = 1;
 			temp = res;
-			res = add_resid((char *)buf);
+			res = add_resid(buf);
 			free(temp);
 		}
 		temp = line;
-       	line = strjoin(line, (char *)buf);
+       	line = strjoin(line, buf);
 		free(temp);
 		if (!line)
 			return (NULL);		
@@ -86,6 +86,7 @@ char	*get_next_line(int fd)
 	free (buf);
 	return (line);
 }
+
 
 #include <fcntl.h>
 #include <stdio.h>

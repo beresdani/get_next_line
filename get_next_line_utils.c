@@ -10,13 +10,14 @@ unsigned long	ft_strlen(char *str)
 		i++;
 	return (i);
 }
+
 char	*ft_strcpy(char *str2, int i)
 {
 	int		j;
 	char	*str1;
 
 	j = 0;
-    str1 = malloc(ft_strlen(str2) + 1);
+    str1 = malloc(ft_strlen(str2));
     if (str1 == NULL)
 	{
         return (NULL);
@@ -27,7 +28,7 @@ char	*ft_strcpy(char *str2, int i)
 		i++;
 		j++;
 	}
-    str1[j] = 0;
+    
 	return (str1);
 }
 
