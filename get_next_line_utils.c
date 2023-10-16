@@ -27,13 +27,13 @@ char	*ft_strcpy(char *str2, int i)
 		i++;
 		j++;
 	}
+    str1[j] = 0;
 	return (str1);
 }
 
 char	*add_resid(char *str)
 {
 	char	*resid;
-	int		len;
 	int		i;
 	int		j;
 	
@@ -43,20 +43,19 @@ char	*add_resid(char *str)
 	{
         return (NULL);
 	}
-	len = ft_strlen(str);
 	j = 0;
-	
-	if (i != len)
+	if (i != BUFFER_SIZE)
 	{   
-		resid = (char *)malloc(len - i + 1);
+		resid = (char *)malloc(BUFFER_SIZE - i + 1);
 		if (resid == NULL)
 			return (NULL);
-		while (str[i] != 0)
+		while (i < BUFFER_SIZE)
 		{
 			resid[j] = str[i];
 			i++;
 			j++;
 		}
+        resid[j] = 0;
 		return (resid);
 	}
 	return (resid);
@@ -67,7 +66,7 @@ int	check_end(char *str)
 	int	i;
 
 	i = 0;
-	while(str[i] != 0)
+	while(i < BUFFER_SIZE)
 	{
 		if (str[i] == '\n')
 			return (i);
@@ -102,5 +101,6 @@ char	*strjoin(char *existing, char *extra)
 		i++;
 		j++;
 	}
+    line[i] = 0;
 	return (line);
 }

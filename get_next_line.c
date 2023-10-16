@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 11:36:35 by dberes            #+#    #+#             */
-/*   Updated: 2023/10/13 22:07:47 by dberes           ###   ########.fr       */
+/*   Updated: 2023/10/16 11:06:48 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ char	*get_next_line(int fd)
 		if (!line)
 			return (NULL);		
 	}
-	line[ft_strlen(line) + 1] = 0;
 	free (buf);
 	return (line);
 }
