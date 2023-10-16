@@ -49,7 +49,7 @@ char	*get_next_line(int fd)
 		return (NULL);
     if (res[0] != 0)
 	{
-		line = (char *)malloc(ft_strlen(res));
+		line = (char *)malloc(ft_strlen(res) + 1);
 		if (line == NULL)
 			return NULL;
 		line = ft_strcpy(res, 0);
@@ -70,6 +70,8 @@ char	*get_next_line(int fd)
 			free (buf);
 			return (NULL);
 		}
+		if (read_value == 0)
+			buf = ft_calloc(1,1);
 		if (check_end(buf) < BUFFER_SIZE)
 		{
 			if (buf[check_end(buf)] == 0)
