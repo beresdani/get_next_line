@@ -41,11 +41,13 @@ char	*get_next_line(int fd)
 	static	char	*res;
 	char			*temp;
 	int				read_value;
+	static int		text_end;		
 
 	newline = 0;
+	text_end = 0;
     if (!res)
 		res = ft_calloc(1,1);
-	if (!res)
+	if (!res || text_end == 1)
 		return (NULL);
     if (res[0] != 0)
 	{
@@ -71,11 +73,24 @@ char	*get_next_line(int fd)
 			return (NULL);
 		}
 		if (read_value == 0)
-			buf = ft_calloc(1,1);
+		{
+			free(buf);
+			text_end = 1;
+			buf = ft_calloc(1, 1);
+		}
 		if (check_end(buf) < BUFFER_SIZE)
 		{
 			if (buf[check_end(buf)] == 0)
+			{
+				if (text_end == 1)
+				{
+					free(line);
+					free(buf);
+					return (NULL);
+				}
+				text_end = 1;
 				return(strjoin(line, buf));
+			}
 			newline = 1;
 			temp = res;
 			res = add_resid(buf);
@@ -83,7 +98,6 @@ char	*get_next_line(int fd)
 		}
 		buf[read_value] = '\0';
        	line = strjoin(line, buf);
-		free (buf);
 		if (!line)
 			return (NULL);		
 	}
@@ -102,3 +116,4 @@ int	main(void)
 	printf("%s", get_next_line(fd));
 	int close(int fd);
 }
+

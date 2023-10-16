@@ -105,5 +105,6 @@ char	*strjoin(char *existing, char *extra)
 	}
     line[i] = 0;
 	free(existing);
+	free(extra);
 	return (line);
 }
