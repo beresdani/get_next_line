@@ -45,15 +45,8 @@ char	*res_handler(char *res, char *line, int text_end)
 		if (line == NULL)
 			return NULL;
 		line = ft_strcpy(res, 0);
+		return (line);
 	}
-	else
-		line = ft_calloc(1,1);
-	if (!line)
-		return (NULL);
-	else
-		line = ft_calloc(1,1);
-	if (!line)
-		return (NULL);
 	return (line);
 }
 
@@ -63,76 +56,88 @@ char	*buf_handler(char *line, int *text_end, int fd)
 	int		read_value;
 
 	buf = (void *)malloc(BUFFER_SIZE * sizeof(char) + 1);
-		if (!buf)
-			return (NULL);
-		read_value = read(fd, buf, BUFFER_SIZE);
-		if (read_value == -1 || fd < 0)
+	if (!buf)
+		return (NULL);
+	read_value = read(fd, buf, BUFFER_SIZE);
+	if (read_value == -1 || fd < 0 )
+	{
+		free (line);
+		free (buf);
+		return (NULL);
+	}
+	if (read_value == 0)
+	{
+		free(buf);
+		*text_end = 1;
+		buf = ft_calloc(1, 1);
+	}
+	buf[read_value] = '\0';
+	return (buf);
+}
+
+char	*l_hand(char *line, char **res, int *text_end, int *newline, char *buf)
+{
+	char	*temp;
+
+	if (check_end(buf) < BUFFER_SIZE)
+	{
+		if (buf[check_end(buf)] == 0)
 		{
-			free (line);
-			free (buf);
-			return (NULL);
-		}
-		if (read_value == 0)
-		{
-			free(buf);
+			if (*text_end == 1)
+			{
+				free(line);
+				free(buf);
+				return (NULL);
+			}
 			*text_end = 1;
-			buf = ft_calloc(1, 1);
+			return(strjoin(line, buf));
 		}
-		buf[read_value] = '\0';
-		return (buf);
+		*newline = 1;
+		temp = *res;
+		*res = add_resid(buf);
+		free(temp);
+	}
+    return (strjoin(line, buf));	
 }
 
 char	*get_next_line(int fd)
 {
 	char			*line;
 	char			*buf;
-	static	char	*res;
-	char			*temp;
+	static char		*res;
 	static int		text_end;
 	int				newline;
 
 	newline = 0;
-	if (res_handler(res, line, text_end) == NULL)
+	line = ft_calloc(1,1);
+	if (!line)
+		return (NULL);
+	if (res_handler(res, line, text_end) == NULL || buf_handler(line, &text_end, fd) == 0)
 		return (NULL);
 	line = (res_handler(res, line, text_end));
 	while (newline == 0)
 	{
 		buf = buf_handler(line, &text_end, fd);
-		if (check_end(buf) < BUFFER_SIZE)
-		{
-			if (buf[check_end(buf)] == 0)
-			{
-				if (text_end == 1)
-				{
-					free(line);
-					free(buf);
-					return (NULL);
-				}
-				text_end = 1;
-				return(strjoin(line, buf));
-			}
-			newline = 1;
-			temp = res;
-			res = add_resid(buf);
-			free(temp);
-		}
-       	line = strjoin(line, buf);
-		if (!line)
+		line = l_hand(line, &res, &text_end, &newline, buf);
+		if (text_end == 1)
+			return (line);
+       	if (!line)
 			return (NULL);		
 	}
 	return (line);
 }
 
-
+/*
 #include <fcntl.h>
 #include <stdio.h>
 
 int	main(void)
 {
+	
 	int	fd = open("try.txt", O_RDONLY); 
 	printf("%s", get_next_line(fd));
 	printf("%s", get_next_line(fd));
 	printf("%s", get_next_line(fd));
 	int close(int fd);
 }
-
+*/
