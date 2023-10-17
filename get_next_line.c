@@ -33,18 +33,8 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (array);
 }
 
-char	*get_next_line(int fd)
+char	*res_handler(char *res, char *line, int text_end)
 {
-	char			*line;
-	char			*buf;
-	int				newline;
-	static	char	*res;
-	char			*temp;
-	int				read_value;
-	static int		text_end;		
-
-	newline = 0;
-	text_end = 0;
     if (!res)
 		res = ft_calloc(1,1);
 	if (!res || text_end == 1)
@@ -60,9 +50,19 @@ char	*get_next_line(int fd)
 		line = ft_calloc(1,1);
 	if (!line)
 		return (NULL);
-	while (newline == 0)
-	{
-		buf = (void *)malloc(BUFFER_SIZE * sizeof(char) + 1);
+	else
+		line = ft_calloc(1,1);
+	if (!line)
+		return (NULL);
+	return (line);
+}
+
+char	*buf_handler(char *line, int *text_end, int fd)
+{
+	char	*buf;
+	int		read_value;
+
+	buf = (void *)malloc(BUFFER_SIZE * sizeof(char) + 1);
 		if (!buf)
 			return (NULL);
 		read_value = read(fd, buf, BUFFER_SIZE);
@@ -75,9 +75,29 @@ char	*get_next_line(int fd)
 		if (read_value == 0)
 		{
 			free(buf);
-			text_end = 1;
+			*text_end = 1;
 			buf = ft_calloc(1, 1);
 		}
+		buf[read_value] = '\0';
+		return (buf);
+}
+
+char	*get_next_line(int fd)
+{
+	char			*line;
+	char			*buf;
+	static	char	*res;
+	char			*temp;
+	static int		text_end;
+	int				newline;
+
+	newline = 0;
+	if (res_handler(res, line, text_end) == NULL)
+		return (NULL);
+	line = (res_handler(res, line, text_end));
+	while (newline == 0)
+	{
+		buf = buf_handler(line, &text_end, fd);
 		if (check_end(buf) < BUFFER_SIZE)
 		{
 			if (buf[check_end(buf)] == 0)
@@ -96,7 +116,6 @@ char	*get_next_line(int fd)
 			res = add_resid(buf);
 			free(temp);
 		}
-		buf[read_value] = '\0';
        	line = strjoin(line, buf);
 		if (!line)
 			return (NULL);		

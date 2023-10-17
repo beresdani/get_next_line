@@ -29,4 +29,6 @@ int					check_end(char *str);
 char				*add_resid(char *str);
 void                *ft_calloc(size_t nmemb, size_t size);
 char	            *ft_strcpy(char *str2, int i);
+char				*buf_handler(char *line, int *text_end, int fd);
+char				*res_handler(char *res, char *line, int text_end);
 #endif
