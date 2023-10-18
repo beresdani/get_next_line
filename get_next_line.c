@@ -41,16 +41,19 @@ void 	free_str(char **str)
 	return (array);
 }*/
 
-char	*res_handler(char **res, char *line, int te)
+char	*res_handler(char **res, int te)
 {
+	char *line;
+
+	line = NULL;
 	if (!*res || te == 1)
 		return (NULL);
-	if ((*res)[0] != 0)
+	if (*res && (*res)[0] != 0)
 	{
 		line = (char *)malloc(ft_strlen(*res) + 1);
 		if (line == NULL)
 			return (NULL);
-		line = ft_strcpy(*res, 0);
+		line = res_cpy(*res, 0);
 		free_str (res);
 		return (line);
 	}
@@ -69,17 +72,18 @@ char	*buf_handler(char *line, int *te, int fd)
 	read_value = read(fd, buf, BUFFER_SIZE);
 	if (read_value == -1 || fd < 0)
 	{
-		free (line);
-		free (buf);
+		free_str(&line);
+		free_str(&buf);
 		return (NULL);
 	}
 	if (read_value == 0)
 	{
-		free(buf);
+		free_str(&buf);
 		*te = 1;
 		buf = NULL;
 	}
-	buf[read_value] = '\0';
+	if (buf)
+		buf[read_value] = '\0';
 	return (buf);
 }
 
@@ -89,19 +93,19 @@ char	*l_ha(char *line, char **res, int *te, char *buf)
 
 	if (check_end(buf) < BUFFER_SIZE)
 	{
-		if (buf[check_end(buf)] == 0)
+		if (buf && buf[check_end(buf)] == 0)
 		{
 			if (*te == 1)
 			{
-				free(line);
-				free(buf);
+				free_str(&line);
+				free_str(&buf);
 				return (NULL);
 			}
 			*te = 1;
 			return (strjoin(line, buf));
 		}
 		temp = *res;
-		free(temp);
+		free_str(&temp);
 		temp = add_resid(buf);
 		if (temp != NULL)
 			*res = temp;
@@ -118,7 +122,7 @@ char	*get_next_line(int fd)
 	int				nl;
 
 	nl = 0;
-	line = (res_handler(&res, line, te));
+	line = (res_handler(&res, te));
 	while (nl == 0)
 	{
 		buf = buf_handler(line, &te, fd);
@@ -156,4 +160,3 @@ int	main(void)
 		free(temp);
 	int close(int fd);
 }
-

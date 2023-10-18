@@ -28,9 +28,8 @@ char				*strjoin(char *exisiting, char *extra);
 int					check_end(char *str);
 char				*add_resid(char *str);
 void				free_str(char **str);
-char				*ft_strcpy(char *str2, int i);
+char				*res_cpy(char *str2, int i);
 char				*buf_handler(char *line, int *t_end, int fd);
-char				*res_handler(char **res, char *line, int t_end);
+char				*res_handler(char **res, int t_end);
 char				*l_ha(char *line, char **res, int *te, char *buf);
-void				*ft_calloc(size_t nmemb, size_t size);
 #endif

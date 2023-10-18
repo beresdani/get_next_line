@@ -17,29 +17,33 @@ unsigned long	ft_strlen(char *str)
 	unsigned long	i;
 
 	i = 0;
-    if (!str)
-        return (0);
+	if (!str)
+		return (0);
 	while (str[i] != 0)
 		i++;
 	return (i);
 }
 
-char	*ft_strcpy(char *str2, int i)
+char	*res_cpy(char *str2, int i)
 {
 	int		j;
+	int		k;
 	char	*str1;
 
 	j = 0;
-	str1 = malloc(ft_strlen(str2) * sizeof(char) + 1);
+	k = i;
+	while (str2 && str2[k] != '\n')
+		k++;
+	str1 = malloc((k + 1 - i) * sizeof(char) + 1);
 	if (str1 == NULL)
 		return (NULL);
-	str1[ft_strlen(str2)] = 0;
-	while (str2[i] != 0)
+	while (j < k - i + 2)
 	{
 		str1[j] = str2[i];
 		i++;
 		j++;
 	}
+	str1[j] = 0;
 	return (str1);
 }
 
@@ -51,7 +55,8 @@ char	*add_resid(char *str)
 
 	i = check_end(str);
 	j = 0;
-	if (i != BUFFER_SIZE && str[i])
+	resid = NULL;
+	if (i != BUFFER_SIZE && str)
 	{
 		resid = (char *)malloc(BUFFER_SIZE - i + 1);
 		if (resid == NULL)
@@ -73,7 +78,7 @@ int	check_end(char *str)
 	int	i;
 
 	i = 0;
-	while (i < BUFFER_SIZE && str[i])
+	while (i < BUFFER_SIZE && str)
 	{
 		if (str[i] == 0)
 			return (i);
@@ -90,6 +95,8 @@ char	*strjoin(char *existing, char *extra)
 	int				j;
 	char			*line;
 
+	if (!existing && !extra)
+		return (NULL);
 	line = (char *)malloc(ft_strlen(existing) + check_end(extra) + 1);
 	if (line == NULL)
 		return (NULL);
@@ -107,7 +114,7 @@ char	*strjoin(char *existing, char *extra)
 		j++;
 	}
 	line[i] = 0;
-	free(existing);
-	free(extra);
+	free_str(&existing);
+	free_str(&extra);
 	return (line);
 }
