@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 11:42:23 by dberes            #+#    #+#             */
-/*   Updated: 2023/10/10 15:03:55 by dberes           ###   ########.fr       */
+/*   Updated: 2023/10/18 13:30:33 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,19 @@
 # include <limits.h>
 # include <stdio.h>
 
-#ifndef BUFFER_SIZE
-#define BUFFER_SIZE 10
-#endif
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10
+# endif
 
 char				*get_next_line(int fd);
 unsigned long		ft_strlen(char *str);
 char				*strjoin(char *exisiting, char *extra);
 int					check_end(char *str);
 char				*add_resid(char *str);
-void                *ft_calloc(size_t nmemb, size_t size);
-char	            *ft_strcpy(char *str2, int i);
-char				*buf_handler(char *line, int *text_end, int fd);
-char				*res_handler(char *res, char *line, int text_end);
-char				*l_hand(char *line, char **res, int *text_end, int *newline, char *buf);
+void				free_str(char **str);
+char				*ft_strcpy(char *str2, int i);
+char				*buf_handler(char *line, int *t_end, int fd);
+char				*res_handler(char **res, char *line, int t_end);
+char				*l_ha(char *line, char **res, int *te, char *buf);
+void				*ft_calloc(size_t nmemb, size_t size);
 #endif
