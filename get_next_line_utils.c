@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-unsigned long	check_len(char *str)
+int	check_len(char *str)
 {
 	unsigned long	i;
 
@@ -24,29 +24,6 @@ unsigned long	check_len(char *str)
 	return (i);
 }
 
-char	*res_cpy(char *str2, int i)
-{
-	int		j;
-	int		k;
-	char	*str1;
-
-	j = 0;
-	k = i;
-	while (str2 && str2[k] != '\n')
-		k++;
-	str1 = malloc((k + 1 - i) * sizeof(char) + 1);
-	if (str1 == NULL)
-		return (NULL);
-	while (j < k - i + 2)
-	{
-		str1[j] = str2[i];
-		i++;
-		j++;
-	}
-	str1[j] = 0;
-	return (str1);
-}
-
 char	*trim_buf(char **str)
 {
 	char	*resid;
@@ -55,19 +32,17 @@ char	*trim_buf(char **str)
 
 	i = check_end(str);
 	j = 0;
-	if (i != BUFFER_SIZE && *str)
+	
+	resid = (char *)malloc(BUFFER_SIZE - i + 1);
+	if (resid == NULL)
+		return (NULL);
+	while (i < BUFFER_SIZE && (*str)[i])
 	{
-		resid = (char *)malloc(BUFFER_SIZE - i + 1);
-		if (resid == NULL)
-			return (NULL);
-		while (i < BUFFER_SIZE && (*str)[i])
-		{
-			resid[j] = (*str)[i];
-			i++;
-			j++;
-		}
-		resid[j] = 0;
+		resid[j] = (*str)[i];
+		i++;
+		j++;
 	}
+	resid[j] = 0;
     return (resid);
 }
 

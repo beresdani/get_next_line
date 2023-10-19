@@ -20,27 +20,6 @@ void 	free_str(char **str)
 		*str = NULL;
 	}
 }
-/*
-char	*res_handler(char **res, int te)
-{
-	char *line;
-
-	line = NULL;
-	if (!*res || te == 1)
-		return (NULL);
-	if (*res && (*res)[0] != 0)
-	{
-		line = (char *)malloc(check_len(*res) + 1);
-		if (line == NULL)
-			return (NULL);
-		line = res_cpy(*res, 0);
-		free_str (res);
-		return (line);
-	}
-	free_str (res);
-	return (line);
-}
-*/
 
 char	*buf_handler(char *line, int *te, int fd)
 {
@@ -91,7 +70,7 @@ char	*l_ha(char *line, int *te, char **buf, int *nl)
 	    return (line);
 	}
     line = strjoin(line, buf);
-    *buf = NULL;
+	free_str(buf);
 	return (line);
 }
 
@@ -121,7 +100,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-
+/*
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -145,3 +124,4 @@ int	main(void)
 	int close(int fd);
 
 }
+*/

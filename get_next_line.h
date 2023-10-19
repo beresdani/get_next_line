@@ -23,7 +23,7 @@
 # endif
 
 char				*get_next_line(int fd);
-unsigned long		check_len(char *str);
+int         		check_len(char *str);
 char				*strjoin(char *exisiting, char **extra);
 int					check_end(char **str);
 char				*trim_buf(char **str);
