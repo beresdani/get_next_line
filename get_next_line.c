@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 11:36:35 by dberes            #+#    #+#             */
-/*   Updated: 2023/10/18 14:28:47 by dberes           ###   ########.fr       */
+/*   Updated: 2023/10/19 17:25:39 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,7 @@ void 	free_str(char **str)
 		*str = NULL;
 	}
 }
-/*void	*ft_calloc(size_t nmemb, size_t size)
-{
-	size_t	spaces;
-	char	*array;
-    size_t	i;
-
-    i = 0;
-	spaces = nmemb * size;
-	if (spaces > INT_MAX)
-		return (NULL);
-	array = malloc(spaces);
-	if (array == NULL)
-		return (NULL);
-    while (i < spaces)
-    {
-        array[i] = 0;
-        i++;
-    }
-	return (array);
-}*/
-
+/*
 char	*res_handler(char **res, int te)
 {
 	char *line;
@@ -50,7 +30,7 @@ char	*res_handler(char **res, int te)
 		return (NULL);
 	if (*res && (*res)[0] != 0)
 	{
-		line = (char *)malloc(ft_strlen(*res) + 1);
+		line = (char *)malloc(check_len(*res) + 1);
 		if (line == NULL)
 			return (NULL);
 		line = res_cpy(*res, 0);
@@ -60,13 +40,14 @@ char	*res_handler(char **res, int te)
 	free_str (res);
 	return (line);
 }
+*/
 
 char	*buf_handler(char *line, int *te, int fd)
 {
 	char	*buf;
 	int		read_value;
 
-	buf = (void *)malloc(BUFFER_SIZE * sizeof(char) + 1);
+	buf = (char *)malloc(BUFFER_SIZE * sizeof(char) + 1);
 	if (!buf)
 		return (NULL);
 	read_value = read(fd, buf, BUFFER_SIZE);
@@ -87,51 +68,54 @@ char	*buf_handler(char *line, int *te, int fd)
 	return (buf);
 }
 
-char	*l_ha(char *line, char **res, int *te, char *buf)
+char	*l_ha(char *line, int *te, char **buf, int *nl)
 {
 	char	*temp;
 
-	if (check_end(buf) < BUFFER_SIZE)
+	if (check_end(buf) < check_len(*buf))
 	{
+        *nl = 1;
 		if (buf && buf[check_end(buf)] == 0)
 		{
 			if (*te == 1)
 			{
 				free_str(&line);
-				free_str(&buf);
+				free_str(buf);
 				return (NULL);
 			}
 			*te = 1;
-			return (strjoin(line, buf));
 		}
-		temp = *res;
-		free_str(&temp);
-		temp = add_resid(buf);
-		if (temp != NULL)
-			*res = temp;
+        line = strjoin(line, buf);
+	    temp = trim_buf(buf);
+        *buf = temp;
+	    return (line);
 	}
-	return (strjoin(line, buf));
+    line = strjoin(line, buf);
+    *buf = NULL;
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
 	char			*line;
-	char			*buf;
-	static char		*res;
+	static char		*buf;
 	static int		te;
 	int				nl;
 
 	nl = 0;
-	line = (res_handler(&res, te));
+	/*line = (res_handler(&res, te));*/
+    line = NULL;
 	while (nl == 0)
 	{
-		buf = buf_handler(line, &te, fd);
-		if (check_end(buf) < BUFFER_SIZE)
-			nl = 1;
-		line = l_ha(line, &res, &te, buf);
+        if (check_end(&buf) == 0 || check_end(&buf) == BUFFER_SIZE)
+		    buf = buf_handler(line, &te, fd);
+		line = l_ha(line, &te, &buf, &nl);
 		if (te == 1)
+        {
+            te = 0;
 			return (line);
-		if (!line || !buf)
+        }
+		if (!line)
 			return (NULL);
 	}
 	return (line);
@@ -159,4 +143,5 @@ int	main(void)
 	if (temp)
 		free(temp);
 	int close(int fd);
+
 }

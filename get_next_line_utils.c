@@ -6,13 +6,13 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 10:09:50 by dberes            #+#    #+#             */
-/*   Updated: 2023/10/18 14:15:22 by dberes           ###   ########.fr       */
+/*   Updated: 2023/10/19 17:23:40 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-unsigned long	ft_strlen(char *str)
+unsigned long	check_len(char *str)
 {
 	unsigned long	i;
 
@@ -47,7 +47,7 @@ char	*res_cpy(char *str2, int i)
 	return (str1);
 }
 
-char	*add_resid(char *str)
+char	*trim_buf(char **str)
 {
 	char	*resid;
 	int		i;
@@ -55,49 +55,47 @@ char	*add_resid(char *str)
 
 	i = check_end(str);
 	j = 0;
-	resid = NULL;
-	if (i != BUFFER_SIZE && str)
+	if (i != BUFFER_SIZE && *str)
 	{
 		resid = (char *)malloc(BUFFER_SIZE - i + 1);
 		if (resid == NULL)
 			return (NULL);
-		while (i < BUFFER_SIZE && str[i])
+		while (i < BUFFER_SIZE && (*str)[i])
 		{
-			resid[j] = str[i];
+			resid[j] = (*str)[i];
 			i++;
 			j++;
 		}
 		resid[j] = 0;
-		return (resid);
 	}
-	return (resid);
+    return (resid);
 }
 
-int	check_end(char *str)
+int	check_end(char **str)
 {
 	int	i;
 
 	i = 0;
-	while (i < BUFFER_SIZE && str)
+	while (i < BUFFER_SIZE && *str)
 	{
-		if (str[i] == 0)
+		if ((*str)[i] == 0)
 			return (i);
-		else if (str[i] == '\n')
+		else if ((*str)[i] == '\n')
 			return (i + 1);
 		i++;
 	}
-	return (i);
+	return (BUFFER_SIZE);
 }
 
-char	*strjoin(char *existing, char *extra)
+char	*strjoin(char *existing, char **extra)
 {
 	int				i;
 	int				j;
 	char			*line;
 
-	if (!existing && !extra)
+	if (!existing && !*extra)
 		return (NULL);
-	line = (char *)malloc(ft_strlen(existing) + check_end(extra) + 1);
+	line = (char *)malloc(check_len(existing) + check_end(extra) + 1);
 	if (line == NULL)
 		return (NULL);
 	i = 0;
@@ -107,14 +105,13 @@ char	*strjoin(char *existing, char *extra)
 		i++;
 	}
 	j = 0;
-	while (j < check_end(extra))
+	while (*extra && j < check_end(extra))
 	{
-		line[i] = extra[j];
+		line[i] = (*extra)[j];
 		i++;
 		j++;
 	}
 	line[i] = 0;
 	free_str(&existing);
-	free_str(&extra);
 	return (line);
 }
