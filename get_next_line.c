@@ -45,30 +45,18 @@ char	*buf_handler(int *te, int fd)
 	return (buf);
 }
 
-char	*l_ha(char *line, int *te, char **buf, int *nl)
+char	*l_ha(char *line, char **buf, int *nl)
 {
 	int	len;
 
 	len = check_len(buf);
-	if (*buf)
+	if (*buf && len != 0)
 	{ 
-		if(check_end(buf) < len || (*buf)[len - 1] == '\n' || len < BUFFER_SIZE)
+		if(check_end(buf) != len || (*buf)[len - 1] == 10 )
 		{
         	*nl = 1;
-			if (buf && len < BUFFER_SIZE)
-			{
-				if (*te == 1)
-				{
-					free_str(&line);
-					free_str(buf);
-					return (NULL);
-				}
-				*te = 1;
-			}
         	line = strjoin(line, buf);
 	    	*buf = trim_buf(buf);
-			if (check_end(buf) < len || len < BUFFER_SIZE)
-				free_str(buf);
 	    	return (line);
 		}
 	}
@@ -90,32 +78,43 @@ char	*get_next_line(int fd)
     line = NULL;
 	while (nl == 0)
 	{
-        if (check_end(&buf) == 0 || check_end(&buf) == check_len(&buf))
+        if (!buf || check_end(&buf) == BUFFER_SIZE)
+		{
+			free_str(&buf);
 		    buf = buf_handler(&te, fd);
-		line = l_ha(line, &te, &buf, &nl);
+			if (!buf)
+				return (line);
+		}
+		if (te == 0)
+			line = l_ha(line, &buf, &nl);
 		if (te == 1)
+		{
+			free_str(&buf);
  			return (line);
- 		if (!line)
-			return (NULL);
+		}
 	}
 	return (line);
 }
 
-/*
+
 #include <fcntl.h>
 #include <stdio.h>
 
 int	main(void)
 {
 	
-	int	fd = open("try.txt", O_RDONLY); 
-	char *temp;
-	temp = get_next_line(fd);
-	printf("%s", temp);
-	if (temp)
-		free(temp);
+	int	fd = open("try.txt", O_RDONLY);
 	
+	char *temp;
 
+	temp = get_next_line(fd);
+	while (temp != NULL)
+	{
+		printf("%s", temp);
+		temp = get_next_line(fd);
+	}
+	printf("%s", temp);
+	free(temp);
 	int close(int fd);
+	return (0);
 }
-*/

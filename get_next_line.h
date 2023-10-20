@@ -19,7 +19,7 @@
 # include <stdio.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
+#  define BUFFER_SIZE 1
 # endif
 
 char				*get_next_line(int fd);
@@ -29,7 +29,7 @@ int					check_end(char **str);
 char				*trim_buf(char **str);
 void				free_str(char **str);
 char				*res_cpy(char *str2, int i);
-char				*buf_handler(int *t_end, int fd);
+char				*buf_handler(int *te, int fd);
 char				*res_handler(char **res, int t_end);
-char				*l_ha(char *line, int *te, char **buf, int *nl);
+char				*l_ha(char *line, char **buf, int *nl);
 #endif
