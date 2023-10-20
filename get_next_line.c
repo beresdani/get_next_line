@@ -21,7 +21,7 @@ void 	free_str(char **str)
 	}
 }
 
-char	*buf_handler(char *line, int *te, int fd)
+char	*buf_handler(int *te, int fd)
 {
 	char	*buf;
 	int		read_value;
@@ -32,7 +32,6 @@ char	*buf_handler(char *line, int *te, int fd)
 	read_value = read(fd, buf, BUFFER_SIZE);
 	if (read_value == -1 || fd < 0)
 	{
-		free_str(&line);
 		free_str(&buf);
 		return (NULL);
 	}
@@ -40,7 +39,6 @@ char	*buf_handler(char *line, int *te, int fd)
 	{
 		free_str(&buf);
 		*te = 1;
-		buf = NULL;
 	}
 	if (buf)
 		buf[read_value] = '\0';
@@ -49,27 +47,33 @@ char	*buf_handler(char *line, int *te, int fd)
 
 char	*l_ha(char *line, int *te, char **buf, int *nl)
 {
-	char	*temp;
+	int	len;
 
-	if (check_end(buf) < check_len(*buf))
-	{
-        *nl = 1;
-		if (buf && buf[check_end(buf)] == 0)
+	len = check_len(buf);
+	if (*buf)
+	{ 
+		if(check_end(buf) < len || (*buf)[len - 1] == '\n' || len < BUFFER_SIZE)
 		{
-			if (*te == 1)
+        	*nl = 1;
+			if (buf && len < BUFFER_SIZE)
 			{
-				free_str(&line);
-				free_str(buf);
-				return (NULL);
+				if (*te == 1)
+				{
+					free_str(&line);
+					free_str(buf);
+					return (NULL);
+				}
+				*te = 1;
 			}
-			*te = 1;
+        	line = strjoin(line, buf);
+	    	*buf = trim_buf(buf);
+			if (check_end(buf) < len || len < BUFFER_SIZE)
+				free_str(buf);
+	    	return (line);
 		}
-        line = strjoin(line, buf);
-	    temp = trim_buf(buf);
-        *buf = temp;
-	    return (line);
 	}
-    line = strjoin(line, buf);
+	if (*buf)
+		line = strjoin(line, buf);
 	free_str(buf);
 	return (line);
 }
@@ -78,23 +82,20 @@ char	*get_next_line(int fd)
 {
 	char			*line;
 	static char		*buf;
-	static int		te;
+	int				te;
 	int				nl;
 
 	nl = 0;
-	/*line = (res_handler(&res, te));*/
+	te = 0;
     line = NULL;
 	while (nl == 0)
 	{
-        if (check_end(&buf) == 0 || check_end(&buf) == BUFFER_SIZE)
-		    buf = buf_handler(line, &te, fd);
+        if (check_end(&buf) == 0 || check_end(&buf) == check_len(&buf))
+		    buf = buf_handler(&te, fd);
 		line = l_ha(line, &te, &buf, &nl);
 		if (te == 1)
-        {
-            te = 0;
-			return (line);
-        }
-		if (!line)
+ 			return (line);
+ 		if (!line)
 			return (NULL);
 	}
 	return (line);
@@ -113,15 +114,8 @@ int	main(void)
 	printf("%s", temp);
 	if (temp)
 		free(temp);
-	temp = get_next_line(fd);
-	printf("%s", temp);
-	if (temp)
-		free(temp);
-	temp = get_next_line(fd);
-	printf("%s", temp);
-	if (temp)
-		free(temp);
-	int close(int fd);
+	
 
+	int close(int fd);
 }
 */

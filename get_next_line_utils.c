@@ -12,14 +12,14 @@
 
 #include "get_next_line.h"
 
-int	check_len(char *str)
+int	check_len(char **str)
 {
-	unsigned long	i;
+	int	i;
 
 	i = 0;
-	if (!str)
+	if (!*str)
 		return (0);
-	while (str[i] != 0)
+	while ((*str)[i] != 0)
 		i++;
 	return (i);
 }
@@ -49,17 +49,19 @@ char	*trim_buf(char **str)
 int	check_end(char **str)
 {
 	int	i;
+	int	len;
 
 	i = 0;
-	while (i < BUFFER_SIZE && *str)
+	len = check_len(str);
+	while (i < len && *str)
 	{
 		if ((*str)[i] == 0)
 			return (i);
-		else if ((*str)[i] == '\n')
+		else if (i < len && (*str)[i] == '\n')
 			return (i + 1);
 		i++;
 	}
-	return (BUFFER_SIZE);
+	return (len);
 }
 
 char	*strjoin(char *existing, char **extra)
@@ -70,7 +72,7 @@ char	*strjoin(char *existing, char **extra)
 
 	if (!existing && !*extra)
 		return (NULL);
-	line = (char *)malloc(check_len(existing) + check_end(extra) + 1);
+	line = (char *)malloc(check_len(&existing) + check_end(extra) + 1);
 	if (line == NULL)
 		return (NULL);
 	i = 0;
