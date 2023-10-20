@@ -48,20 +48,27 @@ char	*buf_handler(int *te, int fd)
 char	*l_ha(char *line, char **buf, int *nl)
 {
 	int	len;
+	char *temp;
 
 	len = check_len(buf);
-	if (*buf && len != 0)
+	if (len != 0)
 	{ 
 		if(check_end(buf) != len || (*buf)[len - 1] == 10 )
 		{
         	*nl = 1;
         	line = strjoin(line, buf);
+			temp = *buf;
 	    	*buf = trim_buf(buf);
+			free_str(&temp);
 	    	return (line);
 		}
 	}
-	if (*buf)
-		line = strjoin(line, buf);
+	else
+	{
+		free_str(buf);
+		return (NULL);
+	}
+	line = strjoin(line, buf);
 	free_str(buf);
 	return (line);
 }
@@ -82,8 +89,11 @@ char	*get_next_line(int fd)
 		{
 			free_str(&buf);
 		    buf = buf_handler(&te, fd);
-			if (!buf)
+			if (buf == NULL)
+			{
+				free_str(&buf);
 				return (line);
+			}
 		}
 		if (te == 0)
 			line = l_ha(line, &buf, &nl);
@@ -96,14 +106,17 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-
+/*
 #include <fcntl.h>
 #include <stdio.h>
 
 int	main(void)
 {
+	char *str;
+
+	str = "kaki";
 	
-	int	fd = open("try.txt", O_RDONLY);
+	int	fd = open(&str, O_RDONLY);
 	
 	char *temp;
 
@@ -118,3 +131,4 @@ int	main(void)
 	int close(int fd);
 	return (0);
 }
+*/
