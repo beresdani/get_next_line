@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/04 11:36:35 by dberes            #+#    #+#             */
-/*   Updated: 2023/10/23 16:25:42 by dberes           ###   ########.fr       */
+/*   Created: 2023/10/23 16:24:24 by dberes            #+#    #+#             */
+/*   Updated: 2023/10/23 16:25:39 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char	*l_ha(char *line, char **buf, int *nl)
 char	*get_next_line(int fd)
 {
 	char			*line;
-	static char		*buf;
+	static char		*buf[1024];
 	int				te;
 	int				nl;
 
@@ -83,17 +83,17 @@ char	*get_next_line(int fd)
 	line = NULL;
 	while (nl == 0)
 	{
-		if (!buf || check_end(&buf) == BUFFER_SIZE)
+		if (!buf[fd] || check_end(&buf[fd]) == BUFFER_SIZE)
 		{
-			free_str(&buf);
-			buf = buf_handler(&te, fd, &line);
-			if (buf == NULL)
+			free_str(&buf[fd]);
+			buf[fd] = buf_handler(&te, fd, &line);
+			if (buf[fd] == NULL)
 				return (line);
 		}
 		if (te == 0)
-			line = l_ha(line, &buf, &nl);
+			line = l_ha(line, &buf[fd], &nl);
 		if (te == 1)
-			return (free_str(&buf), line);
+			return (free_str(&buf[fd]), line);
 	}
 	return (line);
 }
