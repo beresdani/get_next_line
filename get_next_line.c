@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-void 	free_str(char **str)
+void	free_str(char **str)
 {
 	if (*str)
 	{
@@ -21,7 +21,7 @@ void 	free_str(char **str)
 	}
 }
 
-char	*buf_handler(int *te, int fd)
+char	*buf_handler(int *te, int fd, char **line)
 {
 	char	*buf;
 	int		read_value;
@@ -31,10 +31,7 @@ char	*buf_handler(int *te, int fd)
 		return (NULL);
 	read_value = read(fd, buf, BUFFER_SIZE);
 	if (read_value == -1 || fd < 0)
-	{
-		free_str(&buf);
-		return (NULL);
-	}
+		return (free_str(&buf), free_str(line), NULL);
 	if (read_value == 0)
 	{
 		free_str(&buf);
@@ -47,20 +44,20 @@ char	*buf_handler(int *te, int fd)
 
 char	*l_ha(char *line, char **buf, int *nl)
 {
-	int	len;
-	char *temp;
+	int		len;
+	char	*temp;
 
 	len = check_len(buf);
 	if (len != 0)
-	{ 
-		if(check_end(buf) != len || (*buf)[len - 1] == 10 )
+	{
+		if (check_end(buf) != len || (*buf)[len - 1] == 10)
 		{
-        	*nl = 1;
-        	line = strjoin(line, buf);
+			*nl = 1;
+			line = strjoin(line, buf);
 			temp = *buf;
-	    	*buf = trim_buf(buf);
+			*buf = trim_buf(buf);
 			free_str(&temp);
-	    	return (line);
+			return (line);
 		}
 	}
 	else
@@ -82,26 +79,20 @@ char	*get_next_line(int fd)
 
 	nl = 0;
 	te = 0;
-    line = NULL;
+	line = NULL;
 	while (nl == 0)
 	{
-        if (!buf || check_end(&buf) == BUFFER_SIZE)
+		if (!buf || check_end(&buf) == BUFFER_SIZE)
 		{
 			free_str(&buf);
-		    buf = buf_handler(&te, fd);
+			buf = buf_handler(&te, fd, &line);
 			if (buf == NULL)
-			{
-				free_str(&buf);
 				return (line);
-			}
 		}
 		if (te == 0)
 			line = l_ha(line, &buf, &nl);
 		if (te == 1)
-		{
-			free_str(&buf);
- 			return (line);
-		}
+			return (free_str(&buf), line);
 	}
 	return (line);
 }
@@ -114,13 +105,16 @@ int	main(void)
 {
 	char *str;
 
-	str = "kaki";
+	str = NULL;
 	
-	int	fd = open(&str, O_RDONLY);
+	int	fd = open("try.txt", O_RDONLY);
 	
 	char *temp;
 
 	temp = get_next_line(fd);
+	printf("%s", temp);
+	free(temp);
+	return(0);
 	while (temp != NULL)
 	{
 		printf("%s", temp);

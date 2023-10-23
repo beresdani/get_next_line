@@ -30,9 +30,10 @@ char	*trim_buf(char **str)
 	int		i;
 	int		j;
 
+	if (!*str)
+		return (NULL);
 	i = check_end(str);
 	j = 0;
-	
 	resid = (char *)malloc(BUFFER_SIZE - i + 1);
 	if (resid == NULL)
 		return (NULL);
@@ -43,7 +44,7 @@ char	*trim_buf(char **str)
 		j++;
 	}
 	resid[j] = 0;
-    return (resid);
+	return (resid);
 }
 
 int	check_end(char **str)
