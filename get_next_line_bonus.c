@@ -81,6 +81,8 @@ char	*get_next_line(int fd)
 	nl = 0;
 	te = 0;
 	line = NULL;
+	if (fd < 0)
+		return (NULL);
 	while (nl == 0)
 	{
 		if (!buf[fd] || check_end(&buf[fd]) == BUFFER_SIZE)
