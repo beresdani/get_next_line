@@ -75,7 +75,7 @@ char	*strjoin(char *existing, char **extra)
 		return (NULL);
 	line = (char *)malloc(check_len(&existing) + check_end(extra) + 1);
 	if (line == NULL)
-		return (NULL);
+		return (free_str(&existing), NULL);
 	i = 0;
 	while (existing && existing[i] != 0)
 	{

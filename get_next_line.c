@@ -57,6 +57,8 @@ char	*l_ha(char *line, char **buf, int *nl)
 			temp = *buf;
 			*buf = trim_buf(buf);
 			free_str(&temp);
+			if ((*buf)[0] == 0)
+				free_str(buf);
 			return (line);
 		}
 	}
@@ -66,8 +68,7 @@ char	*l_ha(char *line, char **buf, int *nl)
 		return (NULL);
 	}
 	line = strjoin(line, buf);
-	free_str(buf);
-	return (line);
+	return (free_str(buf), line);
 }
 
 char	*get_next_line(int fd)
@@ -97,7 +98,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/*
+
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -112,9 +113,6 @@ int	main(void)
 	char *temp;
 
 	temp = get_next_line(fd);
-	printf("%s", temp);
-	free(temp);
-	return(0);
 	while (temp != NULL)
 	{
 		printf("%s", temp);
@@ -125,4 +123,3 @@ int	main(void)
 	int close(int fd);
 	return (0);
 }
-*/
